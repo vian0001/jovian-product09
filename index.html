@@ -1,0 +1,1130 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MikroTik RouterOS - Advanced User Security Management</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary-color: #2563eb;
+      --secondary-color: #1e40af;
+      --accent-color: #06b6d4;
+      --success-color: #059669;
+      --warning-color: #d97706;
+      --danger-color: #dc2626;
+      --bg-primary: #0f172a;
+      --bg-secondary: #1e293b;
+      --bg-card: #334155;
+      --bg-light: #f8fafc;
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --border-color: #475569;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: linear-gradient(135deg, var(--bg-primary) 0%, var(--bg-secondary) 100%);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Tech Background Pattern */
+    .tech-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -3;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(6, 182, 212, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(220, 38, 38, 0.08) 0%, transparent 50%);
+    }
+
+    .circuit-pattern {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -2;
+      opacity: 0.03;
+      background-image: 
+        linear-gradient(90deg, var(--primary-color) 1px, transparent 1px),
+        linear-gradient(var(--primary-color) 1px, transparent 1px);
+      background-size: 50px 50px;
+      animation: circuitMove 20s linear infinite;
+    }
+
+    @keyframes circuitMove {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(50px, 50px); }
+    }
+
+    /* Floating particles */
+    .tech-particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: var(--accent-color);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: float linear infinite;
+    }
+
+    @keyframes float {
+      0% { 
+        transform: translateY(100vh) translateX(0px);
+        opacity: 0;
+      }
+      10% { 
+        opacity: 0.6;
+      }
+      90% { 
+        opacity: 0.6;
+      }
+      100% { 
+        transform: translateY(-100px) translateX(100px);
+        opacity: 0;
+      }
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 100px 20px 80px;
+      background: linear-gradient(135deg, 
+          rgba(37, 99, 235, 0.1) 0%, 
+          rgba(6, 182, 212, 0.1) 50%, 
+          rgba(5, 150, 105, 0.1) 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(
+          45deg,
+          transparent,
+          rgba(37, 99, 235, 0.1),
+          transparent
+      );
+      animation: headerScan 10s linear infinite;
+    }
+
+    @keyframes headerScan {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .main-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 3.5rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color), var(--success-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 20px;
+      text-shadow: 0 0 50px rgba(37, 99, 235, 0.3);
+      animation: titleGlow 4s ease-in-out infinite alternate;
+      position: relative;
+    }
+
+    @keyframes titleGlow {
+      0% { filter: brightness(1); }
+      100% { filter: brightness(1.2); }
+    }
+
+    .subtitle {
+      font-size: 1.3rem;
+      color: var(--text-secondary);
+      margin-bottom: 40px;
+      font-weight: 300;
+      letter-spacing: 1px;
+    }
+
+    .author-card {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 30px;
+      max-width: 600px;
+      margin: 0 auto;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      animation: cardFloat 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes cardFloat {
+      0% { transform: translateY(0px); }
+      100% { transform: translateY(-10px); }
+    }
+
+    .card-header {
+      text-align: center;
+      font-size: 1.1rem;
+      color: var(--accent-color);
+      margin-bottom: 20px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .author-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+      text-align: left;
+    }
+
+    .info-item {
+      display: flex;
+      align-items: center;
+      padding: 10px 0;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: var(--primary-color);
+      min-width: 80px;
+      margin-right: 15px;
+    }
+
+    .info-value {
+      color: var(--text-primary);
+      font-weight: 400;
+    }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px;
+    }
+
+    /* Section styling */
+    .section {
+      background: linear-gradient(135deg, 
+          rgba(255, 255, 255, 0.05) 0%, 
+          rgba(255, 255, 255, 0.02) 100%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 40px;
+      margin: 40px 0;
+      position: relative;
+      backdrop-filter: blur(20px);
+      transition: all 0.4s ease;
+      animation: sectionSlide 0.8s ease-out;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .section:nth-child(even) {
+      animation: sectionSlideRight 0.8s ease-out;
+    }
+
+    @keyframes sectionSlide {
+      from { transform: translateX(-50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes sectionSlideRight {
+      from { transform: translateX(50px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .section:hover {
+      border-color: var(--primary-color);
+      box-shadow: 0 12px 48px rgba(37, 99, 235, 0.2);
+      transform: translateY(-8px);
+    }
+
+    .section-title {
+      font-family: 'Inter', sans-serif;
+      color: var(--primary-color);
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 25px;
+      position: relative;
+      padding-left: 30px;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 30px;
+      background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+      border-radius: 2px;
+    }
+
+    /* Code blocks with typing effect */
+    .code-terminal {
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 25px;
+      margin: 25px 0;
+      font-family: 'JetBrains Mono', monospace;
+      position: relative;
+      overflow-x: auto;      /* <‑‑ penting agar baris panjang tidak terpotong */
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    .code-terminal::before {
+      content: '$ mikrotik@router:~';
+      color: var(--success-color);
+      font-weight: 600;
+      display: block;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .code-line {
+      color: var(--text-primary);
+      margin: 8px 0;
+      position: relative;
+      padding-left: 20px;
+      transition: all 0.3s ease;
+      opacity: 0;
+      width: 100%;                               /* memastikan baris memenuhi lebar container */
+      font-family: 'JetBrains Mono', monospace;
+      white-space: pre-wrap;                      /* membungkus baris panjang */
+      overflow-wrap: break-word;                  /* memecah kata bila perlu */
+      word-break: break-all;                      /* memastikan tidak ada overflow */
+    }
+
+    .code-line.typing {
+      opacity: 1;
+      border-right: 2px solid var(--accent-color);
+      animation: blink-cursor 1s infinite;
+    }
+
+    .code-line.typed {
+      opacity: 1;
+      border-right: none;
+    }
+
+    @keyframes blink-cursor {
+      0%, 50% { border-color: var(--accent-color); }
+      51%, 100% { border-color: transparent; }
+    }
+
+    .code-line:hover {
+      background: rgba(37, 99, 235, 0.1);
+      padding-left: 25px;
+      border-radius: 6px;
+    }
+
+    .code-line::before {
+      content: '▶';
+      position: absolute;
+      left: 0;
+      color: var(--accent-color);
+      font-size: 0.8rem;
+    }
+
+    .comment { color: var(--text-muted); font-style: italic; }
+    .string  { color: var(--warning-color); }
+    .keyword { color: var(--primary-color); font-weight: 600; }
+
+    /* Alert boxes */
+    .tech-alert, .security-alert, .conclusion-box, .bibliography, .security-alert, .conclusion-box {
+      border-radius: 12px;
+      padding: 25px;
+      margin: 30px 0;
+      position: relative;
+      animation: alertPulse 3s ease-in-out infinite alternate;
+    }
+
+    .tech-alert {
+      background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(6, 182, 212, 0.1));
+      border: 1px solid var(--primary-color);
+      border-left: 4px solid var(--primary-color);
+    }
+    .tech-alert::before {
+      content: '🔧 TEKNOLOGI INFO';
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: var(--bg-primary);
+      color: var(--primary-color);
+      padding: 5px 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 20px;
+      border: 1px solid var(--primary-color);
+    }
+
+    .security-alert {
+      background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(217, 119, 6, 0.1));
+      border: 1px solid var(--danger-color);
+      border-left: 4px solid var(--danger-color);
+    }
+    .security-alert::before {
+      content: '🛡️ KEAMANAN';
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: var(--bg-primary);
+      color: var(--danger-color);
+      padding: 5px 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 20px;
+      border: 1px solid var(--danger-color);
+    }
+
+    .conclusion-box {
+      background: linear-gradient(135deg, rgba(5, 150, 105, 0.1), rgba(37, 99, 235, 0.1));
+      border: 1px solid var(--success-color);
+      border-left: 4px solid var(--success-color);
+    }
+    .conclusion-box::before {
+      content: '📝 KESIMPULAN';
+      position: absolute;
+      top: -12px;
+      left: 20px;
+      background: var(--bg-primary);
+      color: var(--success-color);
+      padding: 5px 15px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 20px;
+      border: 1px solid var(--success-color);
+    }
+
+    @keyframes alertPulse {
+      0% { box-shadow: 0 0 20px rgba(37, 99, 235, 0.2); }
+      100% { box-shadow: 0 0 30px rgba(37, 99, 235, 0.4); }
+    }
+
+    /* Bibliography */
+    .bibliography {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04));
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 20px;
+      padding: 40px;
+      margin-top: 60px;
+      backdrop-filter: blur(20px);
+      animation: biblioFade 1.5s ease-out;
+    }
+
+    @keyframes biblioFade {
+      from { opacity: 0; transform: translateY(50px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .bibliography h3 {
+      color: var(--accent-color);
+      font-family: 'Inter', sans-serif;
+      margin-bottom: 30px;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: 700;
+    }
+
+    .bibliography ul { list-style: none; padding-left: 0; }
+    .bibliography li {
+      background: linear-gradient(135deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 15px;
+      line-height: 1.8;
+      color: var(--text-secondary);
+      transition: all 0.3s ease;
+      position: relative;
+      padding-left: 50px;
+    }
+
+    .bibliography li:hover {
+      color: var(--text-primary);
+      transform: translateX(10px);
+      border-color: var(--primary-color);
+      background: linear-gradient(135deg, rgba(37,99,235,0.1), rgba(6,182,212,0.05));
+    }
+
+    .bibliography a {
+      color: var(--primary-color);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      word-break: break-all;
+    }
+
+    .bibliography a:hover {
+      color: var(--accent-color);
+      text-decoration: underline;
+    }
+
+    /* Progress bar */
+    .scroll-progress {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color), var(--success-color));
+      z-index: 1000;
+      transition: width 0.3s ease;
+      box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+    }
+
+    /* Loading screen */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg-primary), var(--bg-secondary));
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      animation: fadeOut 1s ease-out 3s forwards;
+    }
+
+    .tech-loader {
+      font-family: 'Inter', sans-serif;
+      color: var(--primary-color);
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 40px;
+      animation: loaderPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes loaderPulse {
+0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .loading-bar {
+      width: 400px;
+      height: 6px;
+      background: rgba(37, 99, 235, 0.2);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(37, 99, 235, 0.3);
+    }
+
+    .loading-progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+      border-radius: 10px;
+      animation: loadProgress 3s ease-out forwards;
+      box-shadow: 0 0 20px rgba(37, 99, 235, 0.8);
+    }
+
+    /* Styling untuk container gambar */
+    .image-container {
+      margin: 30px 0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.4s ease;
+      max-width: 100%;
+      position: relative;
+    }
+
+    .image-container:hover {
+      transform: scale(1.02);
+      box-shadow: 0 15px 40px rgba(37, 99, 235, 0.4);
+    }
+
+    .image-container img {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: all 0.4s ease;
+    }
+
+    .image-container:hover img {
+      filter: brightness(1.1);
+    }
+
+    .image-caption {
+      background: linear-gradient(to top, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7), transparent);
+      padding: 15px 20px;
+      color: var(--text-primary);
+      font-size: 0.9rem;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transform: translateY(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .image-container:hover .image-caption {
+      transform: translateY(0);
+    }
+
+    @keyframes loadProgress { 0% { width: 0%; } 100% { width: 100%; } }
+    @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-title { font-size: 2.5rem; }
+      .section { padding: 25px 20px; margin: 30px 0; }
+      .container { padding: 40px 15px; }
+      .code-terminal { padding: 20px; font-size: 0.9rem; }
+      .author-info { grid-template-columns: 1fr; }
+      .loading-bar { width: 300px; }
+    }
+
+    /* Smooth animations */
+    .fade-in { animation: fadeInUp 0.8s ease-out forwards; }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+
+  <!-- Scroll Progress -->
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Tech Background -->
+  <div class="tech-bg"></div>
+  <div class="circuit-pattern"></div>
+  <div class="tech-particles" id="techParticles"></div>
+
+  <!-- Loading screen -->
+  <div class="loading-screen">
+    <div class="tech-loader">Memuat konten...</div>
+    <div class="loading-bar"><div class="loading-progress"></div></div>
+  </div>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <h1 class="main-title">MIKROTIK ROUTEROS</h1>
+  <div class="subtitle">Advanced User Security Management</div>
+  <div class="subtitle">Mengatur password dan mengelola user pada MikroTik</div>
+
+  <div class="author-card">
+    <div class="card-header">Informasi Penulis</div>
+    <div class="author-info">
+      <div class="info-item"><span class="info-label">Penulis:</span><span class="info-value">Jovian Ekasakta</span></div>
+      <div class="info-item"><span class="info-label">Guru:</span><span class="info-value">Arief Wahyudin</span></div>
+      <div class="info-item"><span class="info-label">Kelas:</span><span class="info-value">XI TJKT 03</span></div>
+      <div class="info-item"><span class="info-label">Sekolah:</span><span class="info-value">Dwija Bhakti 01 Jombang</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==============================================================
+       SECTION 1 – UBAH PASSWORD DEFAULT ADMIN
+       ============================================================== -->
+  <div class="section fade-in">
+    <h2 class="section-title">1. MENGUBAH PASSWORD DEFAULT ADMIN</h2>
+    
+    <!-- Container Gambar untuk Section 1 -->
+    <div class="image-container">
+      <img src="YOUR_IMAGE_URL_HERE" alt="Mengubah Password Default Admin MikroTik">
+      <div class="image-caption">Ilustrasi proses mengubah password default admin pada MikroTik RouterOS</div>
+    </div>
+
+    <p>Dari sumber MikroTik Securing Router Documentation (2024), mengubah username default admin ke nama yang berbeda membantu melindungi akses ke router. Menurut System Zone (2021), default username dan password adalah kerentanan umum karena biasanya diketahui oleh siapa saja.</p>
+
+    <div class="security-alert">
+      <p>Dari sumber Medium Im0nk3yar0und (2024), sangat penting untuk mengubah default username dan password guna mencegah unauthorized access ke router.</p>
+    </div>
+
+    <p>Berikut dua cara mengubah password default admin yang bekerja di semua versi RouterOS:</p>
+
+    <!-- Cara 1 – Interaktif -->
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/password</span></div>
+      <div class="code-line comment"># Sistem akan meminta old password (kosong untuk admin default) dan new password</div>
+    </div>
+
+    <!-- Cara 2 – Satu baris (lebih praktis) -->
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user set admin password=StrongP@ssw0rd123</span></div>
+      <div class="code-line comment"># Ganti admin dengan password kuat</div>
+    </div>
+
+    <p>Jika Anda menggunakan ID numerik (hanya pada versi 6.x), perintah berikut juga valid:</p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user set 0 password=StrongP@ssw0rd123</span></div>
+    </div>
+
+    <p>Verifikasi perubahan:</p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user print</span></div>
+    </div>
+
+    <div class="conclusion-box">
+      <strong>Kesimpulan:</strong> Ganti password default admin dengan perintah <code>/password</code> interaktif atau <code>/user set admin password=…</code>. Gunakan password minimal 16 karakter yang mengandung huruf besar, huruf kecil, angka, dan simbol.
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       SECTION 2 – MENGELOLA USER & GROUP
+       ============================================================== -->
+  <div class="section fade-in">
+    <h2 class="section-title">2. MENGELOLA USER DAN GROUP PERMISSIONS</h2>
+    
+    <!-- Container Gambar untuk Section 2 -->
+    <div class="image-container">
+      <img src="YOUR_IMAGE_URL_HERE" alt="Mengelola User dan Group Permissions MikroTik">
+      <div class="image-caption">Tampilan pengelolaan user dan group permissions pada interface MikroTik</div>
+    </div>
+
+    <p>MikroTik memiliki tiga tipe permission: <em>read</em>, <em>write</em>, dan <em>full</em>. Praktik terbaik: batasi hak akses dan batasi IP yang dapat login.</p>
+
+    <p><strong>Membuat user baru dengan permission <code>write</code>:</strong></p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user add name=engineer1 password=Secure123! group=write</span></div>
+    </div>
+
+    <p><strong>Membuat grup custom yang hanya dapat <code>read</code> dan <code>winbox</code> (tidak boleh <code>write</code> atau <code>reboot</code>)</strong></p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user group add name=technician policy=read,winbox,!write,!reboot</span></div>
+      <div class="code-line"><span class="keyword">/user add name=tech1 password=TechP@ss456 group=technician</span></div>
+    </div>
+
+    <p><strong>Batasi login berdasarkan IP (hanya satu alamat IP):</strong></p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user set engineer1 address=192.168.1.100/32</span></div>
+      <div class="code-line"><span class="keyword">/user set remote_admin address=203.0.113.0/24</span></div>
+    </div>
+
+    <p><strong>Perintah umum untuk mengelola user:</strong></p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user print</span></div>
+      <div class="code-line"><span class="keyword">/user set engineer1 password=NewPassword789</span></div>
+      <div class="code-line"><span class="keyword">/user remove old_user</span></div>
+      <div class="code-line"><span class="keyword">/user disable temp_user</span></div>
+    </div>
+
+    <div class="tech-alert">
+      <p>MikroTik RouterOS memiliki fitur untuk membatasi akses user dari IP address spesifik. Praktik terbaik: beri izin hanya pada IP yang memang membutuhkan akses <em>full</em> atau <em>write</em>.</p>
+    </div>
+
+    <div class="conclusion-box">
+      <strong>Kesimpulan:</strong> Kelola user dengan grup yang tepat, tetapkan password kuat (>10 karakter) dan batasi akses berdasarkan IP.
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       SECTION 3 – KEBIJAKAN PASSWORD & KEAMANAN
+       ============================================================== -->
+  <div class="section fade-in">
+    <h2 class="section-title">3. KEBIJAKAN PASSWORD DAN KEAMANAN ADVANCED</h2>
+    
+    <!-- Container Gambar untuk Section 3 -->
+    <div class="image-container">
+      <img src="YOUR_IMAGE_URL_HERE" alt="Kebijakan Password dan Keamanan MikroTik">
+      <div class="image-caption">Setting kebijakan password dan keamanan pada RouterOS 7.x</div>
+    </div>
+
+    <p>RouterOS 7.x menyediakan <code>/user settings</code> untuk mengatur kebijakan password secara global.</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user settings set minimum-password-length=12</span></div>
+      <div class="code-line"><span class="keyword">/user settings set password-same-as-user=no</span></div>
+    </div>
+
+    <div class="tech-alert">
+      <p>System Zone (2021) menyarankan menghapus user <code>admin</code> default. Berikut cara aman menambah admin baru dulu, kemudian menghapus admin lama.</p>
+    </div>
+
+    <p><strong>Langkah menambah admin baru dan menghapus admin default:</strong></p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user add name=sysadmin password=SuperSecure123! group=full</span></div>
+      <div class="code-line comment"># Uji login dengan user baru terlebih dahulu</div>
+      <div class="code-line"><span class="keyword">/user remove admin</span></div>
+    </div>
+
+    <p>Monitoring aktivitas user:</p>
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user active print</span></div>
+      <div class="code-line"><span class="keyword">/log print where topics~"user"</span></div>
+      <div class="code-line"><span class="keyword">/log print where topics~"user,error"</span></div>
+    </div>
+
+    <div class="conclusion-box">
+      <strong>Kesimpulan:</strong> Gunakan <code>/user settings</code> (jika tersedia) untuk kebijakan global, tambahkan admin baru, hapus admin default, dan pantau log secara rutin.
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       SECTION 4 – INTEGRASI RADIUS & AUTENTIKASI EKSTERNAL
+       ============================================================== -->
+  <div class="section fade-in">
+    <h2 class="section-title">4. INTEGRASI RADIUS DAN AUTENTIKASI EKSTERNAL</h2>
+    
+    <!-- Container Gambar untuk Section 4 -->
+    <div class="image-container">
+      <img src="YOUR_IMAGE_URL_HERE" alt="Integrasi RADIUS MikroTik">
+      <div class="image-caption">Konfigurasi RADIUS dan autentikasi eksternal pada MikroTik</div>
+    </div>
+
+    <p>Jika Anda memiliki server RADIUS terpisah, konfigurasikan klien RADIUS pada router:</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/radius add address=192.168.1.5 secret=RadiusSecret123 service=login</span></div>
+      <div class="code-line"><span class="keyword">/user aaa set use-radius=yes default-group=read</span></div>
+    </div>
+
+    <p>Jika ingin memakai <strong>User Manager</strong> (RADIUS internal) pastikan paket <code>user-manager</code> sudah di‑install.</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user-manager database set db-path=user-manager enabled=yes</span></div>
+      <div class="code-line"><span class="keyword">/user-manager router add name=local-router address=127.0.0.1 shared-secret=LocalSecret456</span></div>
+      <div class="code-line"><span class="keyword">/radius add address=127.0.0.1 secret=LocalSecret456 service=login</span></div>
+    </div>
+
+    <p>Contoh menambahkan user dengan OTP (2FA) lewat User Manager:</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user-manager user add name=admin-otp password=BasePass123 otp-secret=MYSECRETKEY123</span></div>
+    </div>
+
+    <p>Monitoring RADIUS:</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/radius monitor [find service=login]</span></div>
+      <div class="code-line"><span class="keyword">/user aaa print</span></div>
+      <div class="code-line"><span class="keyword">/user aaa set accounting=yes interim-update=5m use-radius=yes</span></div>
+    </div>
+
+    <div class="conclusion-box">
+      <strong>Kesimpulan:</strong> Pilih antara RADIUS eksternal atau User Manager internal, aktifkan <code>use‑radius</code> pada AAA, dan tambahkan OTP bila diperlukan.
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       SECTION 5 – FIREWALL DAN ACCESS CONTROL
+       ============================================================== -->
+  <div class="section fade-in">
+    <h2 class="section-title">5. FIREWALL DAN AKSES CONTROL ADVANCED</h2>
+    
+    <!-- Container Gambar untuk Section 5 -->
+    <div class="image-container">
+      <img src="YOUR_IMAGE_URL_HERE" alt="Firewall MikroTik">
+      <div class="image-caption">Konfigurasi firewall dan akses kontrol pada MikroTik RouterOS</div>
+    </div>
+
+    <p>Langkah pertama: blokir semua akses dari WAN kecuali layanan yang memang diperlukan.</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input in-interface=ether1 action=drop comment="Block all WAN access"</span></div>
+    </div>
+
+    <p><strong>Izinkan SSH hanya dari jaringan lokal (misalnya 192.168.1.0/24) dan blokir semua yang lain:</strong></p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input protocol=tcp dst-port=22 src-address=192.168.1.0/24 action=accept comment="Allow SSH from LAN"</span></div>
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input protocol=tcp dst-port=22 action=drop comment="Drop SSH from elsewhere"</span></div>
+    </div>
+
+    <p>Non‑aktifkan layanan berbasis MAC yang tidak diperlukan (WinBox, Telnet, Ping):</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/tool mac-server disable</span></div>
+      <div class="code-line"><span class="keyword">/tool mac-server mac-winbox disable</span></div>
+      <div class="code-line"><span class="keyword">/tool mac-server ping disable</span></div>
+    </div>
+
+    <p>Matikan protokol penemuan tetangga (CDP/LLDP/NDP) agar router tidak muncul pada pemindaian jaringan:</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/ip neighbor discovery-settings set discover-interface-list=none</span></div>
+      <div class="code-line"><span class="keyword">/ipv6 nd set 0 disabled=yes</span></div>
+    </div>
+
+    <p>Contoh filter firewall "default‑deny" yang menerima ICMP, koneksi yang sudah established, dan menolak semua hal lain yang bukan dari interface <code>LAN</code>:</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input protocol=icmp action=accept comment="Allow ICMP"</span></div>
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input connection-state=established,related,untracked action=accept comment="Allow established"</span></div>
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input in-interface-list=LAN action=accept comment="Allow from LAN"</span></div>
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input action=drop comment="Drop everything else"</span></div>
+    </div>
+
+    <div class="security-alert">
+      <p>Pastikan tidak ada service DNS yang terbuka ke internet; tutup port 53 TCP/UDP pada interface WAN.</p>
+    </div>
+
+    <div class="conclusion-box">
+      <strong>Kesimpulan:</strong> Terapkan aturan firewall berlapis: blokir WAN, izinkan hanya layanan yang diperlukan dari LAN, matikan layanan MAC, dan non‑aktifkan protokol penemuan tetangga.
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       SECTION 6 – BACKUP, RECOVERY & TROUBLESHOOTING
+       ============================================================== -->
+  <div class="section fade-in">
+    <h2 class="section-title">6. BACKUP, RECOVERY, DAN TROUBLESHOOTING</h2>
+    
+    <!-- Container Gambar untuk Section 6 -->
+    <div class="image-container">
+      <img src="YOUR_IMAGE_URL_HERE" alt="Backup MikroTik">
+      <div class="image-caption">Proses backup dan recovery konfigurasi MikroTik RouterOS</div>
+    </div>
+
+    <p>Backup konfigurasi pengguna (tidak termasuk password) serta backup sistem lengkap yang dienkripsi.</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user export file=user-backup.rsc</span></div>
+      <div class="code-line comment"># File ini berisi semua user, group, dan policy (tidak berisi password)</div>
+      <div class="code-line"><span class="keyword">/system backup save name=full-backup password=BackupPassword123!</span></div>
+      <div class="code-line comment"># Backup lengkap dengan enkripsi AES‑256</div>
+    </div>
+
+    <p>Jika Anda kehilangan akses karena lupa password, lakukan reset fisik atau gunakan perintah berikut untuk mengembalikan konfigurasi dasar (tidak disarankan pada jaringan produksi tanpa backup):</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/system reset-configuration no-defaults=yes</span></div>
+    </div>
+
+    <p>Setelah reset, pulihkan backup yang telah dibuat:</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/system backup load name=full-backup password=BackupPassword123!</span></div>
+      <div class="code-line"><span class="keyword">/import file=user-backup.rsc</span></div>
+    </div>
+
+    <p>Monitoring aktivitas dan troubleshooting:</p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/user active print</span></div>
+      <div class="code-line"><span class="keyword">/log print where topics~"user,error"</span></div>
+      <div class="code-line"><span class="keyword">/user aaa print</span></div>
+    </div>
+
+    <div class="conclusion-box">
+      <strong>Kesimpulan:</strong> Simpan backup terenkripsi secara rutin, dan gunakan perintah <code>/system backup</code> serta <code>/user export</code> untuk memulihkan konfigurasi bila terjadi kehilangan akses.
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       SECTION 7 – VULNERABILITY AWARENESS & CVE UPDATES
+       ============================================================== -->
+  <div class="section fade-in">
+    <h2 class="section-title">7. VULNERABILITY AWARENESS DAN CVE UPDATES</h2>
+    
+    <!-- Container Gambar untuk Section 7 -->
+    <div class="image-container">
+      <img src="YOUR_IMAGE_URL_HERE" alt="Vulnerability MikroTik">
+      <div class="image-caption">Kerentanan keamanan dan update sistem pada MikroTik RouterOS</div>
+    </div>
+
+    <p>Beberapa CVE kritis yang perlu dipantau:</p>
+    <ul>
+      <li><strong>CVE‑2018‑14847</strong> – Kerentanan WinBox (port 8291) pada versi ≤ 6.42.1.</li>
+      <li><strong>CVE‑2024‑54772</strong> – Kerentanan pada RouterOS 6.49.x dan 7.18.x.</li>
+    </ul>
+
+    <div class="security-alert">
+      <p>Jika tidak dapat memperbarui RouterOS karena perangkat legacy, lakukan mitigasi dengan memblokir akses WinBox dari WAN dan membatasi servis yang terbuka.</p>
+    </div>
+
+    <p><strong>Mitigasi (blokir WinBox dari WAN) :</strong></p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/ip firewall filter add chain=input protocol=tcp dst-port=8291 in-interface-list=WAN action=drop comment="Block WinBox from WAN"</span></div>
+      <div class="code-line"><span class="keyword">/ip service set winbox address=192.168.1.0/24,10.0.0.0/8</span></div>
+    </div>
+
+    <p><strong>Periksa versi RouterOS dan lakukan update:</strong></p>
+
+    <div class="code-terminal">
+      <div class="code-line"><span class="keyword">/system package print</span></div>
+      <div class="code-line"><span class="keyword">/system package update check-for-updates</span></div>
+      <div class="code-line"><span class="keyword">/system package update download</span></div>
+      <div class="code-line comment"># Reboot setelah download selesai</div>
+    </div>
+
+    <div class="conclusion-box">
+      <strong>Kesimpulan:</strong> Pantau advisory keamanan MikroTik, perbarui firmware secara rutin, dan terapkan firewall serta pembatasan service sebagai lapisan pertahanan tambahan.
+    </div>
+  </div>
+
+  <!-- ==============================================================
+       BIBLIOGRAPHY
+       ============================================================== -->
+  <div class="bibliography">
+    <h3>DAFTAR PUSTAKA</h3>
+    <ul>
+      <li><strong>MikroTik Documentation.</strong> 2024. <em>Securing your router - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+yourrouter" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328353/Securing+your+router</a>. Diakses pada 24 Agustus 2025, pukul 08:15 WIB.</li>
+      <li><strong>Im0nk3yar0und.</strong> 2024. <em>Securing Your MikroTik</em>. Medium. <a href="https://medium.com/@im0nk3yar0und/securing-your-mikrotik-49cb28161f9e" target="_blank">https://medium.com/@im0nk3yar0und/securing-your-mikrotik-49cb28161f9e</a>. Diakses pada 24 Agustus 2025, pukul 09:30 WIB.</li>
+      <li><strong>Caster.</strong> 2024. <em>Lockdown: A insane guide to securing MikroTik RouterOS</em>. Blog Exploit.org. <a href="https://blog.exploit.org/caster-routeros-lockdown/" target="_blank">https://blog.exploit.org/caster-routeros-lockdown/</a>. Diakses pada 24 Agustus 2025, pukul 10:45 WIB.</li>
+      <li><strong>MikroTik Forum.</strong> 2024. <em>What are the best practices for securing a MikroTik router from external threats?</em> <a href="https://forum.mikrotik.com/viewtopic.php?t=209775" target="_blank">https://forum.mikrotik.com/viewtopic.php?t=209775</a>. Diakses pada 24 Agustus 2025, pukul 11:20 WIB.</li>
+      <li><strong>MikroTik Security.</strong> 2024. <em>CVE-2024-54772</em>. <a href="https://mikrotik.com/supportsec/cve-2024-54772" target="_blank">https://mikrotik.com/supportsec/cve-2024-54772</a>. Diakses pada 24 Agustus 2025, pukul 12:10 WIB.</li>
+      <li><strong>MikroTik Documentation.</strong> 2024. <em>Building Advanced Firewall - RouterOS</em>. <a href="https://help.mikrotik.com/docs/spaces/ROS/pages/328513/Building+Advanced+Firewall" target="_blank">https://help.mikrotik.com/docs/spaces/ROS/pages/328513/Building+Advanced+Firewall</a>. Diakses pada 24 Agustus 2025, pukul 13:25 WIB.</li>
+      <li><strong>System Zone.</strong> 2021. <em>How to Secure MikroTik RouterOS Login Users</em>. <a href="https://systemzone.net/how-to-secure-mikrotik-routeros-login-users/" target="_blank">https://systemzone.net/how-to-secure-mikrotik-routeros-login-users/</a>. Diakses pada 24 Agustus 2025, pukul 14:15 WIB.</li>
+      <li><strong>MKController.</strong> 2023. <em>Essential Mikrotik Security Guide - Protecting Your Network with Basic Steps</em>. <a href="https://mkcontroller.com/essential-mikrotik-security-guide-protecting-your-network-with-basic-steps/" target="_blank">https://mkcontroller.com/essential-mikrotik-security-guide-protecting-your-network-with-basic-steps/</a>. Diakses pada 24 Agustus 2025, pukul 15:40 WIB.</li>
+      <li><strong>Steveocee.</strong> 2020. <em>Securing RouterOS</em>. <a href="https://www.steveocee.co.uk/mikrotik/securing-routeros/" target="_blank">https://www.steveocee.co.uk/mikrotik/securing-routeros/</a>. Diakses pada 24 Agustus 2025, pukul 16:30 WIB.</li>
+      <li><strong>LinkedIn.</strong> 2023. <em>Securing Your MikroTik Router: Best Practices and Common Pitfalls</em>. <a href="https://www.linkedin.com/pulse/securing-your-mikrotik-router-best-practices-common" target="_blank">https://www.linkedin.com/pulse/securing-your-mikrotik-router-best-practices-common</a>. Diakses pada 24 Agustus 2025, pukul 17:45 WIB.</li>
+      <li><strong>NeuronVM.</strong> 2025. <em>Top MikroTik Firewall Rules to Secure Your Network 2025</em>. <a href="https://neuronvm.com/blog/mikrotik-firewall-rules/" target="_blank">https://neuronvm.com/blog/mikrotik-firewall-rules/</a>. Diakses pada 24 Agustus 2025, pukul 18:50 WIB.</li>
+    </ul>
+  </div>
+
+</div> <!-- end .container -->
+
+<script>
+  // -------------------------------------------------
+  // PARTICLE ANIMATION
+  // -------------------------------------------------
+  function createTechParticles() {
+    const container = document.getElementById('techParticles');
+    const count = window.innerWidth < 768 ? 20 : (window.innerWidth < 1200 ? 35 : 50);
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + 'vw';
+      p.style.animationDelay = Math.random() * 20 + 's';
+      p.style.animationDuration = (Math.random() * 10 + 15) + 's';
+      container.appendChild(p);
+    }
+  }
+
+  // -------------------------------------------------
+  // SCROLL PROGRESS BAR
+  // -------------------------------------------------
+  function updateScrollProgress() {
+    const doc = document.documentElement;
+    const scrollPercent = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    document.getElementById('scrollProgress').style.width = scrollPercent + '%';
+  }
+
+  // -------------------------------------------------
+  // LOADING SCREEN (auto‑hide after 3.5 s)
+  // -------------------------------------------------
+  function hideLoadingScreen() {
+    setTimeout(() => {
+      const el = document.querySelector('.loading-screen');
+      if (el) el.style.display = 'none';
+    }, 3500);
+  }
+
+  // -------------------------------------------------
+  // CODE‑LINE TYPING ANIMATION
+  // -------------------------------------------------
+  function typeLine(el, text, speed = 30) {
+    return new Promise(resolve => {
+      el.classList.add('typing');
+      let i = 0;
+      function step() {
+        if (i < text.length) {
+          el.textContent = text.slice(0, ++i);
+          setTimeout(step, speed);
+        } else {
+          el.classList.remove('typing');
+          el.classList.add('typed');
+          resolve();
+        }
+      }
+      step();
+    });
+  }
+
+  function animateCodeBlocks() {
+    const terminals = document.querySelectorAll('.code-terminal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const lines = entry.target.querySelectorAll('.code-line');
+          let delay = 0;
+          lines.forEach(line => {
+            const txt = line.textContent;
+            setTimeout(() => typeLine(line, txt), delay);
+            delay += 500; // 0.5 s antara baris
+          });
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.3 });
+
+    terminals.forEach(t => observer.observe(t));
+  }
+
+  // -------------------------------------------------
+  // FADE‑IN ANIMATION ON SCROLL
+  // -------------------------------------------------
+  function animateOnScroll() {
+    const elems = document.querySelectorAll('.fade-in');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'fadeInUp 0.8s ease-out forwards';
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    elems.forEach(e => observer.observe(e));
+  }
+
+  // -------------------------------------------------
+  // SECTION HOVER EFFECT
+  // -------------------------------------------------
+  function addSectionHover() {
+    document.querySelectorAll('.section').forEach(sec => {
+      sec.addEventListener('mouseenter', () => sec.style.transform = 'translateY(-8px)');
+      sec.addEventListener('mouseleave', () => sec.style.transform = 'translateY(0)');
+    });
+  }
+
+  // -------------------------------------------------
+  // INITIALISATION
+  // -------------------------------------------------
+  document.addEventListener('DOMContentLoaded', () => {
+    createTechParticles();
+    hideLoadingScreen();
+    animateOnScroll();
+    animateCodeBlocks();
+    addSectionHover();
+    window.addEventListener('scroll', updateScrollProgress);
+    document.documentElement.style.scrollBehavior = 'smooth';
+  });
+
+  // Adjust particle count on resize
+  window.addEventListener('resize', () => {
+    const container = document.getElementById('techParticles');
+    container.innerHTML = '';
+    createTechParticles();
+  });
+</script>
+</body>
+</html>
